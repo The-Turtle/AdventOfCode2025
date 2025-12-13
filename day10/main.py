@@ -38,6 +38,18 @@ def g(joltages, button_wirings):
             vector[number] += 1
         vectors.append(vector)
     memo = {}
+    subset_sums_and_counts = []
+    for subset in subsets(vectors):
+        sum_vec = [0] * n
+        for vector in subset:
+            sum_vec = add(sum_vec, vector)
+        subset_sums_and_counts.append((sum_vec, len(subset)))
+    subset_sum_mod2_dict = {}
+    for sum_vec, count in subset_sums_and_counts:
+        key = tuple(s % 2 for s in sum_vec)
+        if key not in subset_sum_mod2_dict:
+            subset_sum_mod2_dict[key] = []
+        subset_sum_mod2_dict[key].append((sum_vec, count))
     def answer(target):
         key = tuple(target)
         if any(t < 0 for t in target):
@@ -47,13 +59,10 @@ def g(joltages, button_wirings):
         if key in memo:
             return memo[key]
         min_result = None
-        subset_sums_and_counts = []
-        for subset in subsets(vectors):
-            sum_vec = [0] * n
-            for vector in subset:
-                sum_vec = add(sum_vec, vector)
-            subset_sums_and_counts.append((sum_vec, len(subset)))
-        for subset_sum, count in subset_sums_and_counts:
+        target_mod2 = tuple(t % 2 for t in target)
+        if target_mod2 not in subset_sum_mod2_dict:
+            return None
+        for subset_sum, count in subset_sum_mod2_dict[target_mod2]:
             if all((s % 2) == (t % 2) for s, t in zip(subset_sum, target)):
                 diff = [(t - s) // 2 for s, t in zip(subset_sum, target)]
                 rec = answer(diff)
