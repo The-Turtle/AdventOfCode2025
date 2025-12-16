@@ -63,13 +63,12 @@ def g(joltages, button_wirings):
         if target_mod2 not in subset_sum_mod2_dict:
             return None
         for subset_sum, count in subset_sum_mod2_dict[target_mod2]:
-            if all((s % 2) == (t % 2) for s, t in zip(subset_sum, target)):
-                diff = [(t - s) // 2 for s, t in zip(subset_sum, target)]
-                rec = answer(diff)
-                if rec is not None:
-                    total = 2 * rec + count
-                    if min_result is None or total < min_result:
-                        min_result = total
+            diff = [(t - s) // 2 for s, t in zip(subset_sum, target)]
+            rec = answer(diff)
+            if rec is not None:
+                total = 2 * rec + count
+                if min_result is None or total < min_result:
+                    min_result = total
         memo[key] = min_result
         return min_result
     a = answer(joltages)
